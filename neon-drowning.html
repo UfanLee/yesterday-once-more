@@ -39,6 +39,18 @@
             z-index: -2;
             opacity: 1;
             filter: contrast(1.1) brightness(0.9); /* 增强对比度 */
+            overflow: hidden; /* 防止内容溢出 */
+        }
+
+        /* YouTube iframe 样式 */
+        #video-container iframe {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100vw;
+            height: 100vh;
+            pointer-events: none; /* 禁止点击视频 */
         }
 
         .glass-overlay {
@@ -645,7 +657,11 @@
 </head>
 <body>
     <!-- Video Background -->
-    <video class="video-bg" id="video-bg" autoplay muted loop playsinline>
+    <div id="video-container" class="video-bg">
+        <!-- YouTube iframe will be inserted here by JavaScript -->
+    </div>
+    <!-- Fallback video (used if YouTube fails) -->
+    <video class="video-bg" id="video-bg" autoplay muted loop playsinline style="display: none;">
     </video>
 
     <!-- Debug info for video -->
@@ -772,13 +788,95 @@
         // 使用视频背景
         const useStaticBackground = false;
 
-        // 视频背景列表
+        // YouTube视频ID（请替换为您上传到YouTube的视频ID）
+        // 如果您的YouTube视频URL是 https://www.youtube.com/watch?v=ABCDEFG，那么视频ID就是 ABCDEFG
+        const youtubeVideoId = 'VKN2IdE-2KA'; // 您的YouTube视频ID
+
+        // 本地视频背景列表（作为备用）
         const videoBackgrounds = [
             "videos/background.mp4" // 使用相对路径，视频文件将放在网站的videos文件夹中
         ];
 
         // 当前播放的视频索引
         let currentVideoIndex = 0;
+
+        // 加载YouTube API
+        function loadYouTubeAPI() {
+            const tag = document.createElement('script');
+            tag.src = 'https://www.youtube.com/iframe_api';
+            const firstScriptTag = document.getElementsByTagName('script')[0];
+            firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+        }
+
+        // 初始化YouTube播放器
+        let youtubePlayer;
+        function onYouTubeIframeAPIReady() {
+            showDebug('YouTube API ready');
+            youtubePlayer = new YT.Player('video-container', {
+                videoId: youtubeVideoId,
+                playerVars: {
+                    autoplay: 1,
+                    controls: 0,
+                    disablekb: 1,
+                    fs: 0,
+                    modestbranding: 1,
+                    loop: 1,
+                    playlist: youtubeVideoId, // 需要重复指定videoId才能循环播放
+                    rel: 0,
+                    showinfo: 0,
+                    mute: 1
+                },
+                events: {
+                    'onReady': onPlayerReady,
+                    'onStateChange': onPlayerStateChange,
+                    'onError': onPlayerError
+                }
+            });
+        }
+
+        // 播放器准备好时
+        function onPlayerReady(event) {
+            showDebug('YouTube player ready');
+            event.target.playVideo();
+            // 设置播放器样式
+            const iframe = document.querySelector('#video-container iframe');
+            if (iframe) {
+                iframe.style.position = 'absolute';
+                iframe.style.top = '50%';
+                iframe.style.left = '50%';
+                iframe.style.transform = 'translate(-50%, -50%)';
+                iframe.style.width = '100vw';
+                iframe.style.height = '100vh';
+                iframe.style.pointerEvents = 'none';
+            }
+        }
+
+        // 播放器状态改变时
+        function onPlayerStateChange(event) {
+            // 如果视频结束，重新播放
+            if (event.data === YT.PlayerState.ENDED) {
+                event.target.playVideo();
+            }
+        }
+
+        // 播放器错误时
+        function onPlayerError(event) {
+            showDebug(`YouTube player error: ${event.data}`);
+            // 如果YouTube播放失败，切换到本地视频
+            fallbackToLocalVideo();
+        }
+
+        // 切换到本地视频
+        function fallbackToLocalVideo() {
+            showDebug('Falling back to local video');
+            document.getElementById('video-container').style.display = 'none';
+            const videoBg = document.getElementById('video-bg');
+            videoBg.style.display = 'block';
+            playVideo(0);
+        }
+
+        // 加载YouTube API
+        loadYouTubeAPI();
 
         // Debug function
         function showDebug(message) {
