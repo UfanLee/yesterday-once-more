@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DeepSeek AI Chat</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #f9fafb;
+            color: #333;
+        }
+
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .chat-container {
+            height: calc(100vh - 200px);
+            overflow-y: auto;
+        }
+
+        .user-message {
+            background-color: #e9f5ff;
+            border-radius: 18px 18px 0 18px;
+        }
+
+        .ai-message {
+            background-color: #f3f4f6;
+            border-radius: 18px 18px 18px 0;
+        }
+
+        .typing-indicator {
+            display: inline-flex;
+        }
+
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background-color: #6b7280;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: bounce 1.5s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-4px);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-robot text-2xl text-blue-600 mr-2"></i>
+                        <span class="title-font text-xl font-semibold">DeepSeek AI Chat</span>
+                    </div>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:items-center md:space-x-8">
+                    <a href="index.html" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">
+                        <i class="fas fa-wine-bottle mr-1"></i> Perfume Alchemy
+                    </a>
+                    <a href="chat.html" class="text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-blue-500 text-sm font-medium">
+                        <i class="fas fa-comment-alt mr-1"></i> AI Chat
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="bg-white rounded-xl shadow-md overflow-hidden">
+            <div class="p-4 bg-blue-50 border-b border-gray-200">
+                <h2 class="title-font text-xl font-semibold text-gray-900">Chat with DeepSeek AI</h2>
+                <p class="text-sm text-gray-600">Using API Key: <span id="api-key-display" class="font-mono text-xs bg-gray-100 px-2 py-1 rounded">sk-e398e45602f444e3a0a30d720690285d</span></p>
+                <div id="connection-status" class="mt-2 text-sm">
+                    <span class="inline-flex items-center">
+                        <span id="status-indicator" class="h-2 w-2 rounded-full bg-gray-400 mr-2"></span>
+                        <span id="status-text">Checking connection...</span>
+                    </span>
+                </div>
+            </div>
+
+            <div id="chat-container" class="chat-container p-4 space-y-4">
+                <div class="ai-message p-3 max-w-3/4">
+                    <p>Hello! I'm DeepSeek AI. How can I help you today?</p>
+                </div>
+                <!-- Chat messages will be added here -->
+            </div>
+
+            <div class="p-4 bg-gray-50 border-t border-gray-200">
+                <form id="chat-form" class="flex">
+                    <input
+                        id="user-input"
+                        type="text"
+                        class="flex-grow px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="Type your message here..."
+                    >
+                    <button
+                        type="submit"
+                        class="px-4 py-2 bg-blue-600 text-white rounded-r-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
+                    >
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </form>
+                <div class="mt-2 text-xs text-gray-500">
+                    <p>Try asking about anything, or ask for creative content like stories, poems, or code.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 py-4 px-4 sm:px-6 lg:px-8 text-center text-gray-500 text-sm">
+        <p>This is a demo application using the DeepSeek API. Not for production use.</p>
+    </footer>
+
+    <!-- DeepSeek API Integration -->
+    <script src="api.js"></script>
+
+    <script>
+        // DOM Elements
+        const chatForm = document.getElementById('chat-form');
+        const userInput = document.getElementById('user-input');
+        const chatContainer = document.getElementById('chat-container');
+        const statusIndicator = document.getElementById('status-indicator');
+        const statusText = document.getElementById('status-text');
+        const apiKeyDisplay = document.getElementById('api-key-display');
+
+        // Display the API key (partially masked for security)
+        const apiKey = 'sk-e398e45602f444e3a0a30d720690285d';
+        const maskedKey = apiKey.substring(0, 7) + '...' + apiKey.substring(apiKey.length - 5);
+        apiKeyDisplay.textContent = maskedKey;
+
+        // Check API connection on page load
+        window.addEventListener('load', async () => {
+            try {
+                const isConnected = await window.PerfumeAPI.testApiConnection();
+                if (isConnected) {
+                    statusIndicator.classList.remove('bg-gray-400');
+                    statusIndicator.classList.add('bg-green-500');
+                    statusText.textContent = 'Connected to DeepSeek API';
+                } else {
+                    statusIndicator.classList.remove('bg-gray-400');
+                    statusIndicator.classList.add('bg-red-500');
+                    statusText.textContent = 'Failed to connect to DeepSeek API';
+                }
+            } catch (error) {
+                statusIndicator.classList.remove('bg-gray-400');
+                statusIndicator.classList.add('bg-red-500');
+                statusText.textContent = 'Error connecting to DeepSeek API';
+                console.error('Connection check error:', error);
+            }
+        });
+
+        // Add a message to the chat
+        function addMessage(message, isUser = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = isUser ? 'user-message ml-auto p-3 max-w-3/4' : 'ai-message p-3 max-w-3/4';
+            messageDiv.innerHTML = `<p>${message}</p>`;
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Add a typing indicator
+        function addTypingIndicator() {
+            const indicatorDiv = document.createElement('div');
+            indicatorDiv.id = 'typing-indicator';
+            indicatorDiv.className = 'ai-message p-3 max-w-3/4';
+            indicatorDiv.innerHTML = `
+                <div class="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `;
+            chatContainer.appendChild(indicatorDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Remove typing indicator
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+
+        // Send a message to the DeepSeek API
+        async function sendMessage(message) {
+            try {
+                addTypingIndicator();
+
+                const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${apiKey}`
+                    },
+                    body: JSON.stringify({
+                        model: 'deepseek-V3',
+                        messages: [
+                            {
+                                role: 'user',
+                                content: message
+                            }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 800
+                    })
+                });
+
+                removeTypingIndicator();
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('API error:', errorText);
+                    addMessage('Sorry, I encountered an error. Please try again later.', false);
+                    return;
+                }
+
+                const data = await response.json();
+                const aiResponse = data.choices[0].message.content;
+
+                addMessage(aiResponse, false);
+            } catch (error) {
+                removeTypingIndicator();
+                console.error('Error sending message:', error);
+                addMessage('Sorry, I encountered an error. Please try again later.', false);
+            }
+        }
+
+        // Handle form submission
+        chatForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const message = userInput.value.trim();
+            if (!message) return;
+
+            // Add user message to chat
+            addMessage(message, true);
+
+            // Clear input
+            userInput.value = '';
+
+            // Send message to API
+            await sendMessage(message);
+        });
+
+        // Focus input on page load
+        userInput.focus();
+    </script>
+</body>
+</html>

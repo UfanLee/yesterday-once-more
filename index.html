@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Yesterday Once More | 昨日重现</title>
+    <meta http-equiv="refresh" content="0;url=neon-drowning.html">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap');
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #faf7f2;
+            color: #333;
+        }
+
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+
+        .perfume-card {
+            transition: all 0.3s ease;
+            perspective: 1000px;
+        }
+
+        .perfume-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+
+        .rotateY-180 {
+            transform: rotateY(180deg);
+        }
+
+        .perfume-card-front, .perfume-card-back {
+            backface-visibility: hidden;
+        }
+
+        .perfume-card-back {
+            transform: rotateY(180deg);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #f5f0ff 0%, #faf7f2 100%);
+        }
+
+        .perfume-bottle {
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Chat styles */
+        .user-message {
+            text-align: left;
+            margin-left: auto;
+            max-width: 90%;
+        }
+
+        .user-message > div {
+            background-color: #e9f5ff;
+            border-radius: 18px 18px 0 18px;
+            padding: 0.75rem 1rem;
+            display: inline-block;
+        }
+
+        .ai-message {
+            text-align: left;
+            max-width: 90%;
+        }
+
+        .ai-message p {
+            margin-bottom: 0.5rem;
+        }
+
+        .ai-message p:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Media in chat */
+        .chat-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+
+        .chat-audio {
+            width: 100%;
+            margin-top: 0.5rem;
+        }
+
+        .chat-video {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+
+        /* Media preview */
+        .media-preview-item {
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .media-preview-item img {
+            height: 80px;
+            width: 80px;
+            object-fit: cover;
+        }
+
+        .media-preview-item video {
+            height: 80px;
+            width: 80px;
+            object-fit: cover;
+        }
+
+        .media-preview-item audio {
+            height: 80px;
+            width: 80px;
+            background-color: #f3f4f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .media-preview-remove {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            background-color: rgba(0, 0, 0, 0.5);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 10px;
+        }
+
+        .typing-indicator {
+            display: inline-flex;
+        }
+
+        .typing-indicator span {
+            height: 8px;
+            width: 8px;
+            background-color: #6b7280;
+            border-radius: 50%;
+            margin: 0 2px;
+            animation: bounce 1.5s infinite ease-in-out;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes bounce {
+            0%, 60%, 100% {
+                transform: translateY(0);
+            }
+            30% {
+                transform: translateY(-4px);
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-wine-bottle text-2xl text-purple-600 mr-2"></i>
+                        <span class="title-font text-xl font-semibold">Perfume Alchemy</span>
+                    </div>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:items-center md:space-x-8">
+                    <a href="#" class="text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-purple-500 text-sm font-medium">Create</a>
+                    <a href="#gallery" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Gallery</a>
+                    <a href="#about" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">About</a>
+                </div>
+                <div class="-mr-2 flex items-center md:hidden">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Input -->
+    <div class="gradient-bg py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center">
+            <h1 class="title-font text-4xl md:text-5xl font-bold text-gray-900 mb-6">Craft Your Signature Scent</h1>
+            <p class="text-lg text-gray-600 mb-8">Describe your inspiration, upload media, or paste a link. Our AI will analyze and create a unique perfume formula with bottle design.</p>
+
+            <div class="bg-white rounded-xl shadow-md p-6 mb-8">
+                <div class="flex flex-col">
+                    <div id="chat-container" class="mb-4 max-h-96 overflow-y-auto space-y-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
+                        <!-- Initial welcome message -->
+                        <div class="ai-message">
+                            <div class="flex items-start">
+                                <div class="flex-shrink-0 mr-3">
+                                    <div class="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
+                                        <i class="fas fa-robot text-purple-600"></i>
+                                    </div>
+                                </div>
+                                <div>
+                                    <p>Hello! I'm your perfume assistant powered by DeepSeek AI. I can help you explore fragrances, discuss scent compositions, or create custom perfume concepts. You can also upload images, audio, or video for inspiration!</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex flex-col">
+                        <div class="flex-grow">
+                            <textarea id="perfume-input" rows="3" class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent" placeholder="Ask about perfumes, describe scents, or discuss fragrance compositions..."></textarea>
+                        </div>
+
+                        <!-- Media preview area -->
+                        <div id="media-preview" class="mt-2 flex flex-wrap gap-2 hidden"></div>
+
+                        <!-- Input controls -->
+                        <div class="mt-3 flex items-center justify-between">
+                            <div class="flex space-x-2">
+                                <label for="file-upload" class="cursor-pointer">
+                                    <div class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                                        <i class="fas fa-image mr-2"></i> Add Media
+                                    </div>
+                                    <input id="file-upload" type="file" accept="image/*,audio/*,video/*" class="hidden" multiple />
+                                </label>
+                                <button id="clear-btn" class="inline-flex items-center px-3 py-2 border border-gray-300 rounded-md text-sm text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                                    <i class="fas fa-trash-alt mr-2"></i> Clear
+                                </button>
+                            </div>
+                            <button id="chat-btn" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                                <i class="fas fa-paper-plane mr-2"></i> Send
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 text-sm text-gray-500 flex justify-center space-x-4">
+                <span class="flex items-center"><i class="fas fa-lightbulb mr-1"></i> Describe an emotion</span>
+                <span class="flex items-center"><i class="fas fa-music mr-1"></i> Paste song lyrics</span>
+                <span class="flex items-center"><i class="fas fa-image mr-1"></i> Upload an image</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Section -->
+    <div id="gallery" class="py-12 px-4 sm:px-6 lg:px-8 bg-white">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="title-font text-3xl font-bold text-gray-900 mb-8 text-center">Community Creations</h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Perfume Card 1 -->
+                <div class="perfume-card bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="perfume-card-inner relative w-full h-full">
+                        <div class="perfume-card-front p-6">
+                            <div class="flex justify-center mb-6">
+                                <div class="perfume-bottle w-32 h-48 bg-gradient-to-b from-blue-200 to-purple-300 rounded-xl relative">
+                                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-blue-100 rounded-full"></div>
+                                    <div class="absolute bottom-0 left-0 right-0 h-4 bg-purple-400 rounded-b-xl"></div>
+                                </div>
+                            </div>
+                            <h3 class="title-font text-xl font-semibold mb-2">Ocean Whisper</h3>
+                            <p class="text-gray-600 mb-4">A fresh, aquatic scent with hints of sea salt and coastal flowers.</p>
+                            <div class="flex items-center text-sm text-gray-500">
+                                <span class="flex items-center"><i class="fas fa-user mr-1"></i> Sarah K.</span>
+                                <span class="mx-2">•</span>
+                                <span>2 days ago</span>
+                            </div>
+                        </div>
+                        <div class="perfume-card-back bg-white p-6">
+                            <h4 class="title-font text-lg font-medium mb-3">Fragrance Notes</h4>
+                            <div class="space-y-3 mb-4">
+                                <div>
+                                    <h5 class="font-medium text-sm">Top Notes</h5>
+                                    <p class="text-sm text-gray-600">Sea Salt, Bergamot, Lemon</p>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-sm">Heart Notes</h5>
+                                    <p class="text-sm text-gray-600">Jasmine, Sea Lavender, Driftwood</p>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-sm">Base Notes</h5>
+                                    <p class="text-sm text-gray-600">Ambergris, White Musk, Cedar</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500 italic mb-4">"I was inspired by my morning walks along the beach, with the gentle sound of waves and the fresh sea breeze."</p>
+                            <div class="text-xs text-gray-400">Click to flip back</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Perfume Card 2 -->
+                <div class="perfume-card bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="perfume-card-inner relative w-full h-full">
+                        <div class="perfume-card-front p-6">
+                            <div class="flex justify-center mb-6">
+                                <div class="perfume-bottle w-32 h-48 bg-gradient-to-b from-green-200 to-emerald-300 rounded-xl relative">
+                                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-green-100 rounded-full"></div>
+                                    <div class="absolute bottom-0 left-0 right-0 h-4 bg-emerald-400 rounded-b-xl"></div>
+                                </div>
+                            </div>
+                            <h3 class="title-font text-xl font-semibold mb-2">Forest Reverie</h3>
+                            <p class="text-gray-600 mb-4">An earthy, green fragrance that captures the essence of a lush forest.</p>
+                            <div class="flex items-center text-sm text-gray-500">
+                                <span class="flex items-center"><i class="fas fa-user mr-1"></i> Michael T.</span>
+                                <span class="mx-2">•</span>
+                                <span>1 week ago</span>
+                            </div>
+                        </div>
+                        <div class="perfume-card-back bg-white p-6">
+                            <h4 class="title-font text-lg font-medium mb-3">Fragrance Notes</h4>
+                            <div class="space-y-3 mb-4">
+                                <div>
+                                    <h5 class="font-medium text-sm">Top Notes</h5>
+                                    <p class="text-sm text-gray-600">Pine Needles, Eucalyptus, Mint</p>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-sm">Heart Notes</h5>
+                                    <p class="text-sm text-gray-600">Fir Balsam, Wild Fern, Moss</p>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-sm">Base Notes</h5>
+                                    <p class="text-sm text-gray-600">Cedarwood, Vetiver, Patchouli</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500 italic mb-4">"I wanted to capture the feeling of walking through a dense forest after rainfall, with all the earthy and green scents."</p>
+                            <div class="text-xs text-gray-400">Click to flip back</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Perfume Card 3 -->
+                <div class="perfume-card bg-white rounded-xl shadow-md overflow-hidden">
+                    <div class="perfume-card-inner relative w-full h-full">
+                        <div class="perfume-card-front p-6">
+                            <div class="flex justify-center mb-6">
+                                <div class="perfume-bottle w-32 h-48 bg-gradient-to-b from-red-200 to-pink-300 rounded-xl relative">
+                                    <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-red-100 rounded-full"></div>
+                                    <div class="absolute bottom-0 left-0 right-0 h-4 bg-pink-400 rounded-b-xl"></div>
+                                </div>
+                            </div>
+                            <h3 class="title-font text-xl font-semibold mb-2">Velvet Rose</h3>
+                            <p class="text-gray-600 mb-4">A romantic, floral fragrance with deep, sensual undertones.</p>
+                            <div class="flex items-center text-sm text-gray-500">
+                                <span class="flex items-center"><i class="fas fa-user mr-1"></i> Emma L.</span>
+                                <span class="mx-2">•</span>
+                                <span>3 days ago</span>
+                            </div>
+                        </div>
+                        <div class="perfume-card-back bg-white p-6">
+                            <h4 class="title-font text-lg font-medium mb-3">Fragrance Notes</h4>
+                            <div class="space-y-3 mb-4">
+                                <div>
+                                    <h5 class="font-medium text-sm">Top Notes</h5>
+                                    <p class="text-sm text-gray-600">Pink Pepper, Raspberry, Bergamot</p>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-sm">Heart Notes</h5>
+                                    <p class="text-sm text-gray-600">Damask Rose, Peony, Violet</p>
+                                </div>
+                                <div>
+                                    <h5 class="font-medium text-sm">Base Notes</h5>
+                                    <p class="text-sm text-gray-600">Vanilla, Patchouli, Amber</p>
+                                </div>
+                            </div>
+                            <p class="text-xs text-gray-500 italic mb-4">"I was inspired by a poem about love and wanted to create something that feels like velvet against the skin."</p>
+                            <div class="text-xs text-gray-400">Click to flip back</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- About Section -->
+    <div id="about" class="py-12 px-4 sm:px-6 lg:px-8 gradient-bg">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="title-font text-3xl font-bold text-gray-900 mb-8 text-center">About Perfume Alchemy</h2>
+
+            <div class="bg-white rounded-xl shadow-md p-8">
+                <p class="text-gray-600 mb-6">Perfume Alchemy combines the art of perfumery with cutting-edge AI technology to create unique, personalized fragrances based on your inspirations, emotions, and preferences.</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-6">
+                    <div>
+                        <h3 class="title-font text-xl font-semibold mb-3">How It Works</h3>
+                        <ul class="space-y-2 text-gray-600">
+                            <li class="flex items-start">
+                                <i class="fas fa-pen-fancy mt-1 mr-2 text-purple-500"></i>
+                                <span>Describe your inspiration or upload media</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-brain mt-1 mr-2 text-purple-500"></i>
+                                <span>Our AI analyzes your input and creates a unique formula</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-flask mt-1 mr-2 text-purple-500"></i>
+                                <span>We craft your personalized scent with premium ingredients</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="fas fa-box mt-1 mr-2 text-purple-500"></i>
+                                <span>Your custom perfume arrives in a designer bottle</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="title-font text-xl font-semibold mb-3">Our Technology</h3>
+                        <p class="text-gray-600 mb-4">We've trained our AI on thousands of perfume compositions and fragrance descriptions to understand the complex relationships between scents, emotions, and inspirations.</p>
+                        <p class="text-gray-600">Our algorithm can translate virtually any input—from text descriptions to images, music, or even color palettes—into a harmonious fragrance composition.</p>
+                    </div>
+                </div>
+
+                <div class="border-t border-gray-200 pt-6">
+                    <h3 class="title-font text-xl font-semibold mb-3">Ready to Create?</h3>
+                    <p class="text-gray-600 mb-4">Start by describing your inspiration in the creation box above, or browse our community gallery for ideas.</p>
+                    <a href="#" class="inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-full shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                        Get Started
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-8 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div>
+                <div class="flex items-center mb-4">
+                    <i class="fas fa-wine-bottle text-2xl text-purple-400 mr-2"></i>
+                    <span class="title-font text-xl font-semibold">Perfume Alchemy</span>
+                </div>
+                <p class="text-gray-400 text-sm">Creating unique, AI-powered fragrances that tell your story through scent.</p>
+            </div>
+            <div>
+                <h4 class="title-font text-lg font-medium mb-4">Quick Links</h4>
+                <ul class="space-y-2 text-gray-400">
+                    <li><a href="#" class="hover:text-white">Create Your Perfume</a></li>
+                    <li><a href="#gallery" class="hover:text-white">Community Gallery</a></li>
+                    <li><a href="#about" class="hover:text-white">About Us</a></li>
+                    <li><a href="#" class="hover:text-white">FAQ</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="title-font text-lg font-medium mb-4">Connect With Us</h4>
+                <div class="flex space-x-4 mb-4">
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram text-xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter text-xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook text-xl"></i></a>
+                    <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-pinterest text-xl"></i></a>
+                </div>
+                <p class="text-gray-400 text-sm">Subscribe to our newsletter for updates and exclusive offers.</p>
+            </div>
+        </div>
+        <div class="max-w-7xl mx-auto mt-8 pt-8 border-t border-gray-700 text-center text-gray-400 text-sm">
+            <p>&copy; 2023 Perfume Alchemy. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- No longer needed - removed perfume modal -->
+
+    <!-- DeepSeek API Integration -->
+    <script src="api.js"></script>
+
+    <script>
+        // Toggle perfume card flip
+        document.querySelectorAll('.perfume-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.querySelector('.perfume-card-inner').classList.toggle('rotateY-180');
+            });
+        });
+
+        // Chat container and variables
+        const chatContainer = document.getElementById('chat-container');
+        const perfumeInput = document.getElementById('perfume-input');
+        const chatBtn = document.getElementById('chat-btn');
+        const fileUpload = document.getElementById('file-upload');
+        const clearBtn = document.getElementById('clear-btn');
+        const mediaPreview = document.getElementById('media-preview');
+
+        // Store uploaded files
+        let uploadedFiles = [];
+
+        // Add a message to the chat
+        function addMessage(message, isUser = false, mediaFiles = []) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = isUser ? 'user-message' : 'ai-message';
+
+            if (isUser) {
+                // User message with avatar
+                messageDiv.innerHTML = `
+                    <div class="flex items-start justify-end">
+                        <div>
+                            <p>${message}</p>
+                        </div>
+                        <div class="flex-shrink-0 ml-3">
+                            <div class="h-8 w-8 rounded-full bg-blue-100 flex items-center justify-center">
+                                <i class="fas fa-user text-blue-600"></i>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Add media files if any
+                if (mediaFiles.length > 0) {
+                    const mediaContainer = document.createElement('div');
+                    mediaContainer.className = 'flex flex-wrap gap-2 mt-2 justify-end';
+
+                    mediaFiles.forEach(file => {
+                        if (file.type.startsWith('image/')) {
+                            // Image file
+                            const img = document.createElement('img');
+                            img.src = URL.createObjectURL(file);
+                            img.className = 'chat-image';
+                            img.style.maxWidth = '200px';
+                            mediaContainer.appendChild(img);
+                        } else if (file.type.startsWith('audio/')) {
+                            // Audio file
+                            const audio = document.createElement('audio');
+                            audio.src = URL.createObjectURL(file);
+                            audio.controls = true;
+                            audio.className = 'chat-audio';
+                            mediaContainer.appendChild(audio);
+                        } else if (file.type.startsWith('video/')) {
+                            // Video file
+                            const video = document.createElement('video');
+                            video.src = URL.createObjectURL(file);
+                            video.controls = true;
+                            video.className = 'chat-video';
+                            mediaContainer.appendChild(video);
+                        }
+                    });
+
+                    messageDiv.appendChild(mediaContainer);
+                }
+            } else {
+                // AI message with avatar
+                messageDiv.innerHTML = `
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0 mr-3">
+                            <div class="h-8 w-8 rounded-full bg-purple-100 flex items-center justify-center">
+                                <i class="fas fa-robot text-purple-600"></i>
+                            </div>
+                        </div>
+                        <div>
+                            <p>${message}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Add a typing indicator
+        function addTypingIndicator() {
+            const indicatorDiv = document.createElement('div');
+            indicatorDiv.id = 'typing-indicator';
+            indicatorDiv.className = 'ai-message';
+            indicatorDiv.innerHTML = `
+                <div class="typing-indicator">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            `;
+            chatContainer.appendChild(indicatorDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+        }
+
+        // Remove typing indicator
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typing-indicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+
+        // Send a message to the DeepSeek API for chat
+        async function sendChatMessage(message) {
+            try {
+                addTypingIndicator();
+
+                const systemPrompt = `You are an expert perfumer and fragrance specialist with deep knowledge of scent compositions, ingredients, and perfume creation.
+
+Your expertise includes:
+- Perfume ingredients and their properties
+- Scent families and classifications
+- Fragrance notes (top, middle, base)
+- Perfume composition techniques
+- Historical and cultural aspects of perfumery
+- Analyzing visual, audio, or descriptive inspirations for fragrance creation
+
+When users upload media (images, audio, or video), analyze it for potential fragrance inspirations. For example:
+- For images: Describe what scents might be associated with the visual elements
+- For audio/music: Suggest fragrance notes that match the mood or feeling
+- For videos: Identify sensory elements that could translate to perfume ingredients
+
+Provide detailed, educational responses about perfumery. When appropriate, suggest specific fragrance compositions with top, middle, and base notes that would capture the essence of the user's query or media.`;
+
+                console.log('Sending message to DeepSeek API:', message);
+
+                const response = await fetch('https://api.deepseek.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${window.PerfumeAPI.DEEPSEEK_API_KEY}`
+                    },
+                    body: JSON.stringify({
+                        model: 'deepseek-V3',
+                        messages: [
+                            {
+                                role: 'system',
+                                content: systemPrompt
+                            },
+                            {
+                                role: 'user',
+                                content: message
+                            }
+                        ],
+                        temperature: 0.7,
+                        max_tokens: 1000
+                    })
+                });
+
+                removeTypingIndicator();
+
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.error('API error:', errorText);
+                    addMessage('Sorry, I encountered an error connecting to the DeepSeek API. Please check your API key and try again later.', false);
+                    return;
+                }
+
+                const data = await response.json();
+                console.log('API response:', data);
+
+                if (!data.choices || !data.choices[0] || !data.choices[0].message) {
+                    console.error('Unexpected API response format:', data);
+                    addMessage('Sorry, I received an unexpected response format. Please try again.', false);
+                    return;
+                }
+
+                const aiResponse = data.choices[0].message.content;
+
+                // Format the response to highlight perfume notes if present
+                const formattedResponse = formatPerfumeResponse(aiResponse);
+
+                addMessage(formattedResponse, false);
+            } catch (error) {
+                removeTypingIndicator();
+                console.error('Error sending message:', error);
+                addMessage('Sorry, I encountered an error. Please try again later.', false);
+            }
+        }
+
+        // Format the AI response to highlight perfume notes
+        function formatPerfumeResponse(text) {
+            // This is a simple formatter that could be enhanced to detect and highlight
+            // perfume notes, ingredients, etc. with special formatting
+
+            // Replace note sections with formatted versions
+            text = text.replace(/top notes?:([^\n]+)/gi, '<strong>Top Notes:</strong>$1');
+            text = text.replace(/middle notes?:([^\n]+)/gi, '<strong>Middle Notes:</strong>$1');
+            text = text.replace(/heart notes?:([^\n]+)/gi, '<strong>Heart Notes:</strong>$1');
+            text = text.replace(/base notes?:([^\n]+)/gi, '<strong>Base Notes:</strong>$1');
+
+            // Convert line breaks to paragraphs
+            const paragraphs = text.split('\n\n').filter(p => p.trim() !== '');
+            return paragraphs.map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+        }
+
+        // No longer needed - removed modal functions
+
+        // File upload handling
+        fileUpload.addEventListener('change', function(e) {
+            const files = Array.from(e.target.files);
+            if (files.length === 0) return;
+
+            // Add files to the uploadedFiles array
+            uploadedFiles = [...uploadedFiles, ...files];
+
+            // Show media preview
+            updateMediaPreview();
+        });
+
+        // Update media preview
+        function updateMediaPreview() {
+            // Clear current preview
+            mediaPreview.innerHTML = '';
+
+            if (uploadedFiles.length === 0) {
+                mediaPreview.classList.add('hidden');
+                return;
+            }
+
+            // Show preview container
+            mediaPreview.classList.remove('hidden');
+
+            // Add preview for each file
+            uploadedFiles.forEach((file, index) => {
+                const previewItem = document.createElement('div');
+                previewItem.className = 'media-preview-item';
+
+                if (file.type.startsWith('image/')) {
+                    // Image preview
+                    const img = document.createElement('img');
+                    img.src = URL.createObjectURL(file);
+                    previewItem.appendChild(img);
+                } else if (file.type.startsWith('audio/')) {
+                    // Audio preview
+                    const audioContainer = document.createElement('div');
+                    audioContainer.className = 'audio-preview';
+                    audioContainer.innerHTML = '<i class="fas fa-music text-2xl text-purple-500"></i>';
+                    previewItem.appendChild(audioContainer);
+                } else if (file.type.startsWith('video/')) {
+                    // Video preview
+                    const video = document.createElement('video');
+                    video.src = URL.createObjectURL(file);
+                    video.muted = true;
+                    previewItem.appendChild(video);
+                }
+
+                // Add remove button
+                const removeBtn = document.createElement('div');
+                removeBtn.className = 'media-preview-remove';
+                removeBtn.innerHTML = '<i class="fas fa-times"></i>';
+                removeBtn.addEventListener('click', function() {
+                    uploadedFiles.splice(index, 1);
+                    updateMediaPreview();
+                });
+
+                previewItem.appendChild(removeBtn);
+                mediaPreview.appendChild(previewItem);
+            });
+        }
+
+        // Clear button event listener
+        clearBtn.addEventListener('click', function() {
+            perfumeInput.value = '';
+            uploadedFiles = [];
+            updateMediaPreview();
+            perfumeInput.focus();
+        });
+
+        // Chat button event listener
+        chatBtn.addEventListener('click', async function() {
+            const userInput = perfumeInput.value.trim();
+
+            if (!userInput && uploadedFiles.length === 0) {
+                alert('Please enter a message or upload media.');
+                return;
+            }
+
+            // Add user message to chat
+            addMessage(userInput, true, uploadedFiles);
+
+            // Prepare message for API
+            let apiMessage = userInput;
+
+            // Add descriptions of media files
+            if (uploadedFiles.length > 0) {
+                apiMessage += '\n\n[Attached media: ' +
+                    uploadedFiles.map(file => {
+                        const type = file.type.split('/')[0];
+                        return `${type} (${file.name})`;
+                    }).join(', ') + ']';
+            }
+
+            // Clear input and media
+            perfumeInput.value = '';
+            const oldFiles = [...uploadedFiles]; // Keep a copy for display
+            uploadedFiles = [];
+            updateMediaPreview();
+
+            // Send message to API
+            await sendChatMessage(apiMessage);
+        });
+
+        // Handle Enter key in textarea
+        perfumeInput.addEventListener('keydown', function(e) {
+            // Check if Enter was pressed without Shift key
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault(); // Prevent default behavior (new line)
+                chatBtn.click(); // Trigger chat button click
+            }
+        });
+
+        // Simulate like button functionality
+        document.querySelectorAll('.community-post button .fa-heart').forEach(heart => {
+            heart.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (this.classList.contains('far')) {
+                    this.classList.remove('far');
+                    this.classList.add('fas', 'text-red-500');
+                } else {
+                    this.classList.remove('fas', 'text-red-500');
+                    this.classList.add('far');
+                }
+            });
+        });
+    </script>
+</body>
+</html>

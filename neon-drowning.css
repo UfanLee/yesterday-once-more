@@ -1,0 +1,152 @@
+/* NEON DROWNING - Main Stylesheet */
+
+:root {
+    --pink: #FF6B6B;
+    --blue: #00C4CC;
+    --transition-speed: 0.5s;
+}
+
+/* Ripple Effect */
+.ripple {
+    position: absolute;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.3);
+    width: 5px;
+    height: 5px;
+    animation: ripple-effect 1s linear;
+    transform: translate(-50%, -50%);
+    pointer-events: none;
+    z-index: 9999;
+}
+
+@keyframes ripple-effect {
+    0% {
+        width: 0;
+        height: 0;
+        opacity: 0.5;
+    }
+    100% {
+        width: 500px;
+        height: 500px;
+        opacity: 0;
+    }
+}
+
+/* Floating Elements */
+.float {
+    animation: float 6s ease-in-out infinite;
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0px);
+    }
+    50% {
+        transform: translateY(-20px);
+    }
+    100% {
+        transform: translateY(0px);
+    }
+}
+
+/* Text Dissolve Effect */
+.dissolve-text {
+    display: inline-block;
+    position: relative;
+}
+
+.dissolve-text::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, var(--pink), transparent);
+    opacity: 0;
+    filter: blur(5px);
+    animation: dissolve-pulse 8s ease-in-out infinite;
+}
+
+@keyframes dissolve-pulse {
+    0%, 100% {
+        opacity: 0;
+    }
+    50% {
+        opacity: 0.3;
+    }
+}
+
+/* Water Droplet Effect */
+.droplet {
+    position: absolute;
+    background-color: rgba(255, 255, 255, 0.7);
+    border-radius: 50%;
+    transform-origin: center bottom;
+    animation: droplet-fall 10s linear infinite;
+    opacity: 0;
+}
+
+@keyframes droplet-fall {
+    0% {
+        transform: scale(0);
+        opacity: 0.8;
+    }
+    20% {
+        transform: scale(1);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(0);
+        opacity: 0;
+    }
+}
+
+/* Color Shift Animation for Background */
+@keyframes color-shift {
+    0% {
+        background-position: 0% 50%;
+    }
+    50% {
+        background-position: 100% 50%;
+    }
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
+/* Underwater Blur Effect */
+.underwater-blur {
+    filter: blur(3px);
+    animation: underwater-pulse 8s ease-in-out infinite;
+}
+
+@keyframes underwater-pulse {
+    0%, 100% {
+        filter: blur(3px);
+    }
+    50% {
+        filter: blur(5px);
+    }
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+    .ripple {
+        display: none; /* Disable ripple on mobile for performance */
+    }
+    
+    .underwater-blur {
+        animation: none; /* Disable blur animation on mobile for performance */
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

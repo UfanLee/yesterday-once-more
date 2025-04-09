@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Perfume Alchemy | AI-Powered Scent Creation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Poppins:wght@300;400;500;600&display=swap');
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #faf7f2;
+            color: #333;
+        }
+        
+        .title-font {
+            font-family: 'Playfair Display', serif;
+        }
+        
+        .perfume-card {
+            transition: all 0.3s ease;
+            perspective: 1000px;
+        }
+        
+        .perfume-card-inner {
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        
+        .perfume-card:hover .perfume-card-inner {
+            transform: rotateY(180deg);
+        }
+        
+        .perfume-card-front, .perfume-card-back {
+            backface-visibility: hidden;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+        
+        .perfume-card-back {
+            transform: rotateY(180deg);
+        }
+        
+        .gradient-bg {
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8eb 100%);
+        }
+        
+        .input-container {
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+        
+        .input-container:focus-within {
+            box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        .perfume-bottle {
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-15px); }
+            100% { transform: translateY(0px); }
+        }
+        
+        .community-post {
+            transition: all 0.3s ease;
+        }
+        
+        .community-post:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <div class="flex-shrink-0 flex items-center">
+                        <i class="fas fa-wine-bottle text-2xl text-purple-600 mr-2"></i>
+                        <span class="title-font text-xl font-semibold">Perfume Alchemy</span>
+                    </div>
+                </div>
+                <div class="hidden md:ml-6 md:flex md:items-center md:space-x-8">
+                    <a href="#" class="text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 border-purple-500 text-sm font-medium">Create</a>
+                    <a href="#gallery" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Gallery</a>
+                    <a href="#community" class="text-gray-500 hover:text-gray-700 inline-flex items-center px-1 pt-1 text-sm font-medium">Community</a>
+                    <button class="ml-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                        Sign In
+                    </button>
+                </div>
+                <div class="-mr-2 flex items-center md:hidden">
+                    <button type="button" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-purple-500" aria-controls="mobile-menu" aria-expanded="false">
+                        <span class="sr-only">Open main menu</span>
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section with Input -->
+    <div class="gradient-bg py-12 px-4 sm:px-6 lg:px-8">
+        <div class="max-w-3xl mx-auto text-center">
+            <h1 class="title-font text-4xl md:text-5xl font-bold text-gray-900 mb-6">Craft Your Signature Scent</h1>
+            <p class="text-lg text-gray-600 mb-8">Describe your inspiration, upload media, or paste a link. Our AI will analyze and create a unique perfume formula with bottle design.</p>
+            
+            <div class="input-container relative max-w-2xl mx-auto bg-white rounded-full p-1 shadow-sm">
+                <div class="flex items-center">
+                    <input type="text" id="perfume-input" class="block w-full py-4 px-6 rounded-full border-0 focus:ring-0 text-gray-900 placeholder-gray-400" placeholder="Describe your inspiration (e.g. 'A rainy evening in Paris' or paste a YouTube link)">
+                    <div class="absolute inset-y-0 right-0 flex items-center pr-3 space-x-2">
+                        <button class="p-2 text-gray-400 hover:text-purple-600 focus:outline-none">
+                            <i class="fas fa-image"></i>
+                        </button>
+                        <button class="p-2 text-gray-400 hover:text-purple-600 focus:outline-none">
+                            <i class="fas fa-link"></i>
+                        </button>
+                        <button id="generate-btn" class="ml-2 inline-flex items-center px-6 py-3 border border-transparent text-sm font-medium rounded-full shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                            Generate
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mt-4 text-sm text-gray-500 flex justify-center space-x-4">
+                <span class="flex items-center"><i class="fas fa-lightbulb mr-1"></i> Describe an emotion</span>
+                <span class="flex items-center"><i class="fas fa-music mr-1"></i> Paste song lyrics</span>
+                <span class="flex items-center"><i class="fas fa-image mr-1"></i> Upload an image</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inspiration Gallery -->
+    <div id="gallery" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
+        <div class="text-center mb-12">
+            <h2 class="title-font text-3xl font-bold text-gray-900">Inspiration Gallery</h2>
+            <p class="mt-4 max-w-2xl mx-auto text-gray-600">Click on a perfume bottle to discover its story and composition</p>
+        </div>
+        
+        <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+            <!-- Perfume Card 1 -->
+            <div class="perfume-card relative h-64 cursor-pointer">
+                <div class="perfume-card-inner w-full h-full">
+                    <div class="perfume-card-front flex flex-col items-center justify-center bg-white rounded-xl p-6 shadow-md">
+                        <div class="perfume-bottle w-24 h-40 bg-gradient-to-b from-blue-100 to-blue-300 rounded-lg mb-4 relative">
+                            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-blue-200 rounded-full"></div>
+                            <div class="absolute bottom-0 left-0 right-0 h-2 bg-blue-400 rounded-b-lg"></div>
+                        </div>
+                        <h3 class="title-font text-lg font-medium">Celadon Mist</h3>
+                        <p class="text-sm text-gray-500">Inspired by "青花瓷"</p>
+                    </div>
+                    <div class="perfume-card-back bg-white rounded-xl p-6 shadow-md flex flex-col">
+                        <h3 class="title-font text-lg font-medium mb-2">Celadon Mist</h3>
+                        <p class="text-sm text-gray-600 mb-3">A fragrance capturing the essence of Chinese porcelain and rainy Jiangnan.</p>
+                        <div class="text-xs space-y-1">
+                            <p><span class="font-medium">Top:</span> Lotus, Bamboo, Rain Accord</p>
+                            <p><span class="font-medium">Heart:</span> White Orchid, Rice Steam</p>
+                            <p><span class="font-medium">Base:</span> Sandalwood, White Musk</p>
+                        </div>
+                        <button class="mt-auto text-xs text-purple-600 hover:text-purple-800 text-left">View full details →</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Perfume Card 2 -->
+            <div class="perfume-card relative h-64 cursor-pointer">
+                <div class="perfume-card-inner w-full h-full">
+                    <div class="perfume-card-front flex flex-col items-center justify-center bg-white rounded-xl p-6 shadow-md">
+                        <div class="perfume-bottle w-24 h-40 bg-gradient-to-b from-red-100 to-red-300 rounded-lg mb-4 relative">
+                            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-red-200 rounded-full"></div>
+                            <div class="absolute bottom-0 left-0 right-0 h-2 bg-red-400 rounded-b-lg"></div>
+                        </div>
+                        <h3 class="title-font text-lg font-medium">Emberlit Requiem</h3>
+                        <p class="text-sm text-gray-500">Inspired by "烟花易冷"</p>
+                    </div>
+                    <div class="perfume-card-back bg-white rounded-xl p-6 shadow-md flex flex-col">
+                        <h3 class="title-font text-lg font-medium mb-2">Emberlit Requiem</h3>
+                        <p class="text-sm text-gray-600 mb-3">A scent of fleeting beauty and eternal longing.</p>
+                        <div class="text-xs space-y-1">
+                            <p><span class="font-medium">Top:</span> Smoked Tea, Black Pepper</p>
+                            <p><span class="font-medium">Heart:</span> Incense, Leather</p>
+                            <p><span class="font-medium">Base:</span> Amber, Oud, Vanilla</p>
+                        </div>
+                        <button class="mt-auto text-xs text-purple-600 hover:text-purple-800 text-left">View full details →</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Perfume Card 3 -->
+            <div class="perfume-card relative h-64 cursor-pointer">
+                <div class="perfume-card-inner w-full h-full">
+                    <div class="perfume-card-front flex flex-col items-center justify-center bg-white rounded-xl p-6 shadow-md">
+                        <div class="perfume-bottle w-24 h-40 bg-gradient-to-b from-green-100 to-green-300 rounded-lg mb-4 relative">
+                            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-green-200 rounded-full"></div>
+                            <div class="absolute bottom-0 left-0 right-0 h-2 bg-green-400 rounded-b-lg"></div>
+                        </div>
+                        <h3 class="title-font text-lg font-medium">Bamboo Whisper</h3>
+                        <p class="text-sm text-gray-500">Inspired by "听妈妈的话"</p>
+                    </div>
+                    <div class="perfume-card-back bg-white rounded-xl p-6 shadow-md flex flex-col">
+                        <h3 class="title-font text-lg font-medium mb-2">Bamboo Whisper</h3>
+                        <p class="text-sm text-gray-600 mb-3">A comforting embrace of childhood memories.</p>
+                        <div class="text-xs space-y-1">
+                            <p><span class="font-medium">Top:</span> Green Tea, Pear</p>
+                            <p><span class="font-medium">Heart:</span> Bamboo, Cotton Flower</p>
+                            <p><span class="font-medium">Base:</span> Cedar, Skin Musk</p>
+                        </div>
+                        <button class="mt-auto text-xs text-purple-600 hover:text-purple-800 text-left">View full details →</button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Perfume Card 4 -->
+            <div class="perfume-card relative h-64 cursor-pointer">
+                <div class="perfume-card-inner w-full h-full">
+                    <div class="perfume-card-front flex flex-col items-center justify-center bg-white rounded-xl p-6 shadow-md">
+                        <div class="perfume-bottle w-24 h-40 bg-gradient-to-b from-yellow-100 to-yellow-300 rounded-lg mb-4 relative">
+                            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-6 h-6 bg-yellow-200 rounded-full"></div>
+                            <div class="absolute bottom-0 left-0 right-0 h-2 bg-yellow-400 rounded-b-lg"></div>
+                        </div>
+                        <h3 class="title-font text-lg font-medium">Golden Silk</h3>
+                        <p class="text-sm text-gray-500">Inspired by "东风破"</p>
+                    </div>
+                    <div class="perfume-card-back bg-white rounded-xl p-6 shadow-md flex flex-col">
+                        <h3 class="title-font text-lg font-medium mb-2">Golden Silk</h3>
+                        <p class="text-sm text-gray-600 mb-3">The scent of nostalgia and unspoken love.</p>
+                        <div class="text-xs space-y-1">
+                            <p><span class="font-medium">Top:</span> Osmanthus, Apricot</p>
+                            <p><span class="font-medium">Heart:</span> Silk Accord, Rice Wine</p>
+                            <p><span class="font-medium">Base:</span> Sandalwood, Tonka Bean</p>
+                        </div>
+                        <button class="mt-auto text-xs text-purple-600 hover:text-purple-800 text-left">View full details →</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Community Section -->
+    <div id="community" class="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto bg-gray-50">
+        <div class="text-center mb-12">
+            <h2 class="title-font text-3xl font-bold text-gray-900">Perfume Community</h2>
+            <p class="mt-4 max-w-2xl mx-auto text-gray-600">Discover creations from our community of scent artists</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Community Post 1 -->
+            <div class="community-post bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg">
+                <div class="h-48 bg-gradient-to-r from-blue-50 to-purple-50 flex items-center justify-center">
+                    <div class="perfume-bottle w-20 h-32 bg-gradient-to-b from-blue-200 to-purple-200 rounded-lg relative">
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-blue-100 rounded-full"></div>
+                        <div class="absolute bottom-0 left-0 right-0 h-2 bg-purple-300 rounded-b-lg"></div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="title-font font-medium text-lg">Midnight Sonata</h3>
+                            <p class="text-sm text-gray-500">by @melodychen</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="text-gray-400 hover:text-red-500">
+                                <i class="far fa-heart"></i>
+                            </button>
+                            <span class="text-xs">142</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-3">Inspired by Beethoven's Moonlight Sonata - a fragrance that captures the melancholy and beauty of a moonlit night.</p>
+                    <div class="mt-4 flex justify-between items-center">
+                        <div class="flex space-x-2">
+                            <span class="px-2 py-1 bg-blue-50 text-blue-600 text-xs rounded-full">Floral</span>
+                            <span class="px-2 py-1 bg-purple-50 text-purple-600 text-xs rounded-full">Woody</span>
+                        </div>
+                        <button class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Community Post 2 -->
+            <div class="community-post bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg">
+                <div class="h-48 bg-gradient-to-r from-green-50 to-yellow-50 flex items-center justify-center">
+                    <div class="perfume-bottle w-20 h-32 bg-gradient-to-b from-green-200 to-yellow-200 rounded-lg relative">
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-green-100 rounded-full"></div>
+                        <div class="absolute bottom-0 left-0 right-0 h-2 bg-yellow-300 rounded-b-lg"></div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="title-font font-medium text-lg">Morning Dew</h3>
+                            <p class="text-sm text-gray-500">by @naturelover</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="text-gray-400 hover:text-red-500">
+                                <i class="far fa-heart"></i>
+                            </button>
+                            <span class="text-xs">89</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-3">The crisp freshness of dawn in a forest after rain - green, vibrant, and full of life.</p>
+                    <div class="mt-4 flex justify-between items-center">
+                        <div class="flex space-x-2">
+                            <span class="px-2 py-1 bg-green-50 text-green-600 text-xs rounded-full">Fresh</span>
+                            <span class="px-2 py-1 bg-yellow-50 text-yellow-600 text-xs rounded-full">Citrus</span>
+                        </div>
+                        <button class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Community Post 3 -->
+            <div class="community-post bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg">
+                <div class="h-48 bg-gradient-to-r from-red-50 to-pink-50 flex items-center justify-center">
+                    <div class="perfume-bottle w-20 h-32 bg-gradient-to-b from-red-200 to-pink-200 rounded-lg relative">
+                        <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-4 h-4 bg-red-100 rounded-full"></div>
+                        <div class="absolute bottom-0 left-0 right-0 h-2 bg-pink-300 rounded-b-lg"></div>
+                    </div>
+                </div>
+                <div class="p-6">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <h3 class="title-font font-medium text-lg">Spice Route</h3>
+                            <p class="text-sm text-gray-500">by @wanderlust</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button class="text-gray-400 hover:text-red-500">
+                                <i class="far fa-heart"></i>
+                            </button>
+                            <span class="text-xs">203</span>
+                        </div>
+                    </div>
+                    <p class="text-sm text-gray-600 mt-3">A journey through ancient spice markets - warm, exotic, and mysterious.</p>
+                    <div class="mt-4 flex justify-between items-center">
+                        <div class="flex space-x-2">
+                            <span class="px-2 py-1 bg-red-50 text-red-600 text-xs rounded-full">Spicy</span>
+                            <span class="px-2 py-1 bg-pink-50 text-pink-600 text-xs rounded-full">Oriental</span>
+                        </div>
+                        <button class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-share-alt"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-12 text-center">
+            <button class="inline-flex items-center px-6 py-3 border border-gray-300 shadow-sm text-base font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500">
+                Explore More Creations
+            </button>
+        </div>
+    </div>
+
+    <!-- Generated Perfume Modal (Hidden by default) -->
+    <div id="perfume-modal" class="fixed inset-0 overflow-y-auto hidden z-50 fade-in">
+        <div class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0">
+            <div class="fixed inset-0 transition-opacity" aria-hidden="true">
+                <div class="absolute inset-0 bg-gray-500 opacity-75"></div>
+            </div>
+            <span class="hidden sm:inline-block sm:align-middle sm:h-screen" aria-hidden="true">&#8203;</span>
+            <div class="inline-block align-bottom bg-white rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-4xl sm:w-full">
+                <div class="bg-white px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
+                    <div class="sm:flex sm:items-start">
+                        <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                            <div class="flex justify-between items-center">
+                                <h3 class="title-font text-2xl leading-6 font-medium text-gray-900" id="modal-title">
+                                    Your Custom Perfume
+                                </h3>
+                                <button id="close-modal" class="text-gray-400 hover:text-gray-500">
+                                    <i class="fas fa-times"></i>
+                                </button>
+                            </div>
+                            <div class="mt-6 grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div>
+                                    <div class="flex justify-center mb-6">
+                                        <div class="perfume-bottle w-32 h-48 bg-gradient-to-b from-blue-200 to-purple-300 rounded-xl relative">
+                                            <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-8 h-8 bg-blue-100 rounded-full"></div>
+                                            <div class="absolute bottom-0 left-0 right-0 h-4 bg-purple-400 rounded-b-xl"></div>
+                                        </div>
+                                    </div>
+                                    <h4 class="title-font text-lg font-medium mb-2">Bottle Design</h4>
+                                    <p class="text-sm text-gray-600">The design captures the fluidity and elegance of your inspiration with a modern minimalist aesthetic.</p>
+                                </div>
+                                <div>
+                                    <h4 class="title-font text-lg font-medium mb-3">Fragrance Composition</h4>
+                                    <div class="space-y-4">
+                                        <div>
+                                            <h5 class="font-medium text-sm">Top Notes</h5>
+                                            <p class="text-sm text-gray-600">Bergamot, Pink Pepper, Water Lily</p>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-medium text-sm">Heart Notes</h5>
+                                            <p class="text-sm text-gray-600">Jasmine Sambac, Orris Root, Tea Leaves</p>
+                                        </div>
+                                        <div>
+                                            <h5 class="font-medium text-sm">Base Notes</h5>
+                                            <p class="text-sm text-gray-600">Amber, Musk, Cedarwood</p>
+                                        </div>
+                                    </div>
+                                    <div class="mt-6">
+                                        <h5 class="font-medium text-sm mb-2">Inspiration Analysis</h5>
+                                        <p class="text-sm text-gray-600">Your description of "a rainy evening in Paris" evoked images of romance and nostalgia. The fragrance balances fresh aquatic elements with warm, comforting base notes to capture this mood.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+                    <button type="button" class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-purple-600 text-base font-medium text-white hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:ml-3 sm:w-auto sm:text-sm">
+                        Save to My Collection
+                    </button>
+                    <button type="button" class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm">
+                        Share with Community
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-white">
+        <div class="max-w-7xl mx-auto py-12 px-4 overflow-hidden sm:px-6 lg:px-8">
+            <nav class="-mx-5 -my-2 flex flex-wrap justify-center" aria-label="Footer">
+                <div class="px-5 py-2">
+                    <a href="#" class="text-base text-gray-500 hover:text-gray-900">About</a>
+                </div>
+                <div class="px-5 py-2">
+                    <a href="#" class="text-base text-gray-500 hover:text-gray-900">Blog</a>
+                </div>
+                <div class="px-5 py-2">
+                    <a href="#" class="text-base text-gray-500 hover:text-gray-900">Jobs</a>
+                </div>
+                <div class="px-5 py-2">
+                    <a href="#" class="text-base text-gray-500 hover:text-gray-900">Press</a>
+                </div>
+                <div class="px-5 py-2">
+                    <a href="#" class="text-base text-gray-500 hover:text-gray-900">Accessibility</a>
+                </div>
+                <div class="px-5 py-2">
+                    <a href="#" class="text-base text-gray-500 hover:text-gray-900">Partners</a>
+                </div>
+            </nav>
+            <div class="mt-8 flex justify-center space-x-6">
+                <a href="#" class="text-gray-400 hover:text-gray-500">
+                    <i class="fab fa-facebook-f"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-gray-500">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-gray-500">
+                    <i class="fab fa-twitter"></i>
+                </a>
+                <a href="#" class="text-gray-400 hover:text-gray-500">
+                    <i class="fab fa-pinterest"></i>
+                </a>
+            </div>
+            <p class="mt-8 text-center text-base text-gray-400">
+                &copy; 2023 Perfume Alchemy. All rights reserved.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Toggle perfume card flip
+        document.querySelectorAll('.perfume-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.querySelector('.perfume-card-inner').classList.toggle('rotateY-180');
+            });
+        });
+        
+        // Show modal when generate button is clicked
+        document.getElementById('generate-btn').addEventListener('click', function() {
+            document.getElementById('perfume-modal').classList.remove('hidden');
+        });
+        
+        // Close modal
+        document.getElementById('close-modal').addEventListener('click', function() {
+            document.getElementById('perfume-modal').classList.add('hidden');
+        });
+        
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target === document.getElementById('perfume-modal')) {
+                document.getElementById('perfume-modal').classList.add('hidden');
+            }
+        });
+        
+        // Simulate like button functionality
+        document.querySelectorAll('.community-post button .fa-heart').forEach(heart => {
+            heart.addEventListener('click', function(e) {
+                e.stopPropagation();
+                if (this.classList.contains('far')) {
+                    this.classList.remove('far');
+                    this.classList.add('fas', 'text-red-500');
+                } else {
+                    this.classList.remove('fas', 'text-red-500');
+                    this.classList.add('far');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
