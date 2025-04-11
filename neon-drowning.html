@@ -13,6 +13,10 @@
             --bg-color: #333;
             --text-color: #fff;
             --transition-speed: 0.3s;
+            --pink: #FF6B6B;
+            --pink-rgb: 255, 107, 107;
+            --blue: #00C4CC;
+            --blue-rgb: 0, 196, 204;
         }
 
         * {
@@ -72,27 +76,63 @@
 
         .container {
             display: flex;
-            flex-direction: column;
+            flex-direction: column; /* Changed to column for centered title */
             justify-content: flex-start;
-            align-items: center;
-            height: 100vh;
-            padding: 4rem 2rem;
+            align-items: center; /* Center align everything */
+            min-height: calc(100vh - 10rem);
+            padding: 2rem;
             position: relative;
             z-index: 1;
-            max-width: 1200px;
+            width: 100%; /* Use full width */
+            max-width: 1600px; /* Increased max-width */
+            margin: 0 auto;
+        }
+
+        .quote-container {
+            width: 80%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            text-align: center;
+            margin: 2rem auto;
+        }
+
+        .chat-section {
+            width: 80%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
             margin: 0 auto;
         }
 
         .logo {
-            font-size: 6rem;
+            font-size: 4rem;
             font-weight: 700;
             letter-spacing: -0.05em;
-            margin-bottom: 3rem;
+            margin: 2rem 0;
             text-align: center;
             width: 100%;
             opacity: 1;
             color: white;
             text-transform: lowercase;
+            line-height: 0.9;
+            position: relative;
+            z-index: 10;
+        }
+
+        .quote-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 2rem;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 100%;
         }
 
         @keyframes glowPulse {
@@ -485,141 +525,14 @@
             margin: 0 0.3rem;
         }
 
-        /* Navigation */
-        .nav-dots {
-            display: flex;
-            justify-content: center;
-            margin-top: 1.5rem;
-        }
+        /* 移除导航点相关的CSS */
 
-        .nav-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.3);
-            margin: 0 5px;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .nav-dot.active {
-            background-color: white;
-            transform: scale(1.2);
-        }
-
-        /* Perfume showcase */
+        /* 移除香水展示相关的CSS */
         .page {
-            display: none;
-        }
-
-        .page.active {
             display: block;
-            animation: fadeIn 0.5s forwards;
         }
 
-        .perfume-showcase {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-top: 2rem;
-        }
-
-        .perfume-card {
-            position: relative;
-            background-color: rgba(0, 0, 0, 0.6);
-            border-radius: 15px;
-            overflow: hidden;
-            height: 400px;
-            perspective: 1000px;
-            cursor: pointer;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3),
-                        0 0 15px rgba(var(--pink-rgb), 0.2),
-                        0 0 30px rgba(var(--blue-rgb), 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            transition: all 0.5s ease;
-        }
-
-        .perfume-card:hover {
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3),
-                        0 0 20px rgba(var(--pink-rgb), 0.3),
-                        0 0 40px rgba(var(--blue-rgb), 0.2);
-            transform: translateY(-5px);
-        }
-
-        .perfume-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            transition: transform 0.8s;
-            transform-style: preserve-3d;
-        }
-
-        .perfume-card:hover .perfume-card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .perfume-front, .perfume-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 1.5rem;
-            background-color: rgba(0, 0, 0, 0.7);
-        }
-
-        .perfume-back {
-            transform: rotateY(180deg);
-            overflow-y: auto;
-            text-align: left;
-            background-color: rgba(0, 0, 0, 0.8);
-        }
-
-        .perfume-image {
-            width: 150px;
-            height: 250px;
-            object-fit: contain;
-            margin-bottom: 1rem;
-        }
-
-        .perfume-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .perfume-subtitle {
-            font-size: 0.9rem;
-            opacity: 0.8;
-            margin-bottom: 1rem;
-        }
-
-        .perfume-notes h4 {
-            margin: 1rem 0 0.5rem 0;
-            font-size: 1rem;
-            color: var(--pink);
-        }
-
-        .perfume-notes ul {
-            list-style-type: none;
-            padding-left: 0;
-            margin: 0;
-        }
-
-        .perfume-notes li {
-            padding: 0.3rem 0;
-            font-size: 0.9rem;
-        }
-
-        .perfume-description {
-            margin-top: 1rem;
-            font-size: 0.9rem;
-            line-height: 1.5;
-        }
+        /* 移除香水描述相关的CSS */
 
         /* Language content control */
         .zh-content {
@@ -630,19 +543,7 @@
             display: block;
         }
 
-        .section-title {
-            font-size: 2rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            text-align: center;
-        }
-
-        .section-subtitle {
-            font-size: 1rem;
-            opacity: 0.8;
-            margin-bottom: 2rem;
-            text-align: center;
-        }
+        /* 移除香水展示相关的标题样式 */
 
         @media (max-width: 768px) {
             .logo {
@@ -651,6 +552,26 @@
 
             .chat-container {
                 padding: 1.5rem;
+            }
+
+            .container {
+                flex-direction: column;
+                padding: 2rem 1rem;
+            }
+
+            .content-left, .content-right {
+                width: 100%;
+                padding-right: 0;
+                padding-top: 2rem;
+            }
+
+            .content-left {
+                margin-bottom: 2rem;
+            }
+
+            .quote-text {
+                font-size: 1rem;
+                margin-bottom: 1.5rem;
             }
         }
     </style>
@@ -661,11 +582,11 @@
         <!-- YouTube iframe will be inserted here by JavaScript -->
     </div>
     <!-- Fallback video (used if YouTube fails) -->
-    <video class="video-bg" id="video-bg" autoplay muted loop playsinline style="display: none;">
+    <video class="video-bg" id="video-bg" autoplay muted loop playsinline>
     </video>
 
     <!-- Debug info for video -->
-    <div id="video-debug" style="display: none; position: fixed; bottom: 40px; left: 10px; background: rgba(0,0,0,0.7); color: white; padding: 5px; font-size: 12px; z-index: 1000;"></div>
+    <!-- 移除调试信息 -->
 
     <!-- Glass Effect -->
     <div class="glass-overlay"></div>
@@ -676,106 +597,39 @@
         <button id="zh-lang" class="lang-btn">中文</button>
     </div>
 
+    <h1 class="logo">Yesterday<br>Once More</h1>
+
     <div class="container">
-        <h1 class="logo">Yesterday Once More</h1>
-
-        <!-- Page navigation -->
-        <div class="nav-dots">
-            <div class="nav-dot active" data-page="chat-page"></div>
-            <div class="nav-dot" data-page="perfume-page"></div>
+        <div class="quote-container">
+            <div class="quote-text en-content">
+                Scent is the only sensory input that directly affects emotions through the limbic system. When deeply associated with specific contexts, it can instantly remind you of a person or event - a phenomenon known as the Proustian effect. Find scents you love and record them in your life manual. Use one scent to preserve the present moment, and another to evoke the past. Slowly understand yourself, record yourself, use yourself well, and fall in love with yourself.
+            </div>
+            <div class="quote-text zh-content">
+                气味是唯一一种直接通过边缘系统影响情绪的感官输入，当它与特定情境深度关联，会瞬间让你想到某个人或是事，这种现象被称为Proustian( 普鲁斯特效应  )。去寻找自己喜欢的气味，记录在人生说明书里，一味香用来备份当下，一味香试着唤起过往，慢慢了解自己、记录自己、用好自己、爱上自己。
+            </div>
         </div>
 
-        <!-- Chat Page -->
-        <div id="chat-page" class="page active">
+        <div class="chat-section">
+
+            <!-- 移除导航点 -->
+
+            <!-- Chat Container -->
             <div class="chat-container">
-            <div id="chat-messages" class="chat-messages">
-                <!-- Messages will appear here -->
-            </div>
+                <div id="chat-messages" class="chat-messages">
+                    <!-- Messages will appear here -->
+                </div>
 
-            <div class="input-container">
-                <input type="text" id="chat-input" class="chat-input" placeholder="Describe your perfume inspiration, or upload images, audio, video..." />
-                <button id="media-upload" class="media-upload">
-                    <i class="fas fa-paperclip"></i>
-                </button>
-                <input type="file" id="file-input" class="file-input" accept="image/*,audio/*,video/*" multiple />
-                <button id="send-button" class="send-button">Send</button>
-            </div>
+                <div class="input-container">
+                    <input type="text" id="chat-input" class="chat-input" placeholder="Type your message here..." />
+                    <button id="media-upload" class="media-upload">
+                        <i class="fas fa-paperclip"></i>
+                    </button>
+                    <input type="file" id="file-input" class="file-input" accept="image/*,audio/*,video/*" multiple />
+                    <button id="send-button" class="send-button">Send</button>
+                </div>
 
-            <div id="media-preview" class="media-preview">
-                <!-- Media previews will appear here -->
-            </div>
-        </div>
-        </div>
-
-        <!-- Perfume Page -->
-        <div id="perfume-page" class="page">
-            <h2 class="section-title">Perfume Collection</h2>
-            <p class="section-subtitle">Inspired by Classical Chinese Poetry</p>
-
-            <div class="perfume-showcase">
-                <!-- 青玉案·元夕 Perfume -->
-                <div class="perfume-card">
-                    <div class="perfume-card-inner">
-                        <div class="perfume-front">
-                            <img src="https://placehold.co/150x250/FF6B6B/FFFFFF?text=Lantern+Festival" class="perfume-image" alt="Lantern Festival Perfume">
-                            <h3 class="perfume-title">Lantern Festival</h3>
-                            <p class="perfume-subtitle">Inspired by "青玉案·元夕" (Xin Qiji)</p>
-                        </div>
-                        <div class="perfume-back">
-                            <h3 class="perfume-title">元夕花火 (Lantern Festival)</h3>
-                            <p class="perfume-subtitle">Inspired by Xin Qiji's "青玉案·元夕"</p>
-
-                            <div class="perfume-notes en-content">
-                                <h4 id="top-notes-en">Top Notes: Gunpowder & Plum Wine</h4>
-                                <ul>
-                                    <li>Byredo's Smoked Birch Tar - Simulates spent fireworks' acrid remnants</li>
-                                    <li>Le Labo's Benzoic Acid - Captures chemical burn of exploding firecrackers</li>
-                                    <li>Hermès' Aldehydic Citrus - Cold as iced plum wine splashing on copper</li>
-                                </ul>
-
-                                <h4>Middle Notes: Fir & Tea Mist</h4>
-                                <ul>
-                                    <li>Creed's Pine Resin - High-altitude cold detachment of needle-leaf forests</li>
-                                    <li>Aesop's Japanese Hinoki - Dry wooden temple beams with zen-like quality</li>
-                                    <li>Bvlgari's Tea & Pepper - Steaming tea broth's spiced aromatic vapor</li>
-                                </ul>
-
-                                <h4>Base Notes: Iron Rust & Bitter Orange</h4>
-                                <ul>
-                                    <li>Serge Lutens' Metallic Aldehydes - Sweet tang of rusted church chains</li>
-                                    <li>Etat Libre d'Orange's Damp Moss - Iron oxide tang in post-snow soil</li>
-                                    <li>Tom Ford's Orange Blossom & Petitgrain - Flowers washed in moonlight</li>
-                                </ul>
-                            </div>
-
-                            <div class="perfume-notes zh-content">
-                                <h4 id="top-notes-zh">前调：硝烟与冷甜的对撞</h4>
-                                <ul>
-                                    <li>Byredo的烟熏桦木焦油 - 模拟燃放过的烟花残留的刺鼻气息</li>
-                                    <li>Le Labo的苯甲酸 - 捕捉爆竹爆炸时的化学灼烧感</li>
-                                    <li>Hermès的醛类柑橘 - 冰冷如冰梅酒泼洒在铜器上的感觉</li>
-                                </ul>
-
-                                <h4>中调：冷杉与茶雾</h4>
-                                <ul>
-                                    <li>Creed的松树树脂 - 高海拔针叶林的冷漠疏离感</li>
-                                    <li>Aesop的日本檀木 - 干燥的寺庙木梁带有禅意的质感</li>
-                                    <li>Bvlgari的茶与胡椒 - 冒着热气的茶汤中带有香料的芳香蒸汽</li>
-                                </ul>
-
-                                <h4>基调：铁锈与苦橙</h4>
-                                <ul>
-                                    <li>Serge Lutens的金属醛类 - 生锈教堂铁链的甜涩气息</li>
-                                    <li>Etat Libre d'Orange的湿苔藓 - 雪后土壤中的氧化铁气息</li>
-                                    <li>Tom Ford的橙花与苦橙叶 - 被月光洗涌过的花朵</li>
-                                </ul>
-                            </div>
-
-                            <div class="perfume-description en-content">
-                                <p>Housed in a matte black ceramic bottle with gold crackle inlay, this fragrance begins with snowy plum blossoms and gunpowder, transitions to temple incense and tea steam, and settles into the metallic tang of horseshoe rust with bitter orange. The bottle reveals Xin Qiji's famous verse "众里寻他千百度，蓦然回首，那人却在，灯火阑珊处" only when nearly empty—a poignant reminder that what we seek is often found when we least expect it.</p>
-                            </div>
-                        </div>
-                    </div>
+                <div id="media-preview" class="media-preview">
+                    <!-- Media previews will appear here -->
                 </div>
             </div>
         </div>
@@ -788,17 +642,43 @@
         // 使用视频背景
         const useStaticBackground = false;
 
-        // YouTube视频ID（请替换为您上传到YouTube的视频ID）
-        // 如果您的YouTube视频URL是 https://www.youtube.com/watch?v=ABCDEFG，那么视频ID就是 ABCDEFG
+        // YouTube视频ID
         const youtubeVideoId = 'VKN2IdE-2KA'; // 您的YouTube视频ID
 
-        // 本地视频背景列表（作为备用）
+        // 本地视频背景列表
         const videoBackgrounds = [
-            "videos/background.mp4" // 使用相对路径，视频文件将放在网站的videos文件夹中
+            "videos/background.mp4", // GitHub Pages上使用的相对路径
+            "C:/Users/LXH20/Videos/4月9日.mp4" // 本地开发时使用的绝对路径
         ];
 
         // 当前播放的视频索引
         let currentVideoIndex = 0;
+
+        // 检测当前环境
+        function isGitHubPages() {
+            return window.location.hostname.includes('github.io');
+        }
+
+        // 初始化视频背景
+        function initVideoBackground() {
+            if (isGitHubPages()) {
+                // 在GitHub Pages上使用YouTube视频
+                showDebug('Running on GitHub Pages, using YouTube video');
+                initYouTubeBackground();
+            } else {
+                // 在本地使用本地视频
+                showDebug('Running locally, using local video');
+                document.getElementById('video-container').style.display = 'none';
+                const videoBg = document.getElementById('video-bg');
+                videoBg.style.display = 'block';
+                playVideo(0);
+            }
+        }
+
+        // 初始化YouTube背景
+        function initYouTubeBackground() {
+            loadYouTubeAPI();
+        }
 
         // 加载YouTube API
         function loadYouTubeAPI() {
@@ -875,14 +755,11 @@
             playVideo(0);
         }
 
-        // 加载YouTube API
-        loadYouTubeAPI();
+        // 初始化视频背景
+        initVideoBackground();
 
-        // Debug function
+        // Debug function - 只在控制台输出，不在页面显示
         function showDebug(message) {
-            const debugElement = document.getElementById('video-debug');
-            debugElement.style.display = 'block';
-            debugElement.innerHTML += message + '<br>';
             console.log(message);
         }
 
@@ -913,11 +790,7 @@
 
             showDebug('Removed gradient background');
 
-            // 隐藏调试信息
-            setTimeout(() => {
-                const debugElement = document.getElementById('video-debug');
-                debugElement.style.display = 'none';
-            }, 3000);
+            // 不需要隐藏调试信息，因为它只在控制台输出
 
             return true;
         }
@@ -949,6 +822,10 @@
                 return true; // 成功
             } catch (error) {
                 showDebug(`Error playing video: ${error.message}`);
+                // 尝试播放下一个视频
+                if (index < videoBackgrounds.length - 1) {
+                    return playVideo(index + 1);
+                }
                 return false;
             }
         }
@@ -956,23 +833,27 @@
         // 页面加载时设置背景
         window.addEventListener('DOMContentLoaded', async () => {
             try {
-                // 播放视频
-                await playVideo(0);
+                // 不需要显示调试信息，因为它只在控制台输出
+                showDebug('Page loaded, initializing video background...');
+
+                // 初始化视频背景
+                initVideoBackground();
 
                 // 添加视频事件监听器
                 const videoBg = document.getElementById('video-bg');
-                videoBg.addEventListener('playing', () => console.log('Video is playing'));
+                videoBg.addEventListener('playing', () => {
+                    console.log('Video is playing');
+                    showDebug('Video is now playing');
+                });
                 videoBg.addEventListener('error', (e) => {
                     console.error(`Video error: ${e}`);
+                    showDebug(`Video error: ${e}`);
                 });
 
-                // 隐藏调试信息
-                setTimeout(() => {
-                    const debugElement = document.getElementById('video-debug');
-                    debugElement.style.display = 'none';
-                }, 3000);
+                // 不需要隐藏调试信息，因为它只在控制台输出
             } catch (error) {
                 console.error(`Error in video setup: ${error.message}`);
+                showDebug(`Error in video setup: ${error.message}`);
             }
         });
 
@@ -1183,14 +1064,9 @@
             messageDiv.classList.add('dissolve-in');
         }
 
-        // Format the AI response to highlight perfume notes
+        // 格式化AI响应
         function formatPerfumeResponse(text) {
-            // Replace note sections with formatted versions
-            text = text.replace(/顶调[：:](.*?)(?=\n\n|\n[^\n]|$)/s, '<strong>顶调:</strong>$1');
-            text = text.replace(/中调[：:](.*?)(?=\n\n|\n[^\n]|$)/s, '<strong>中调:</strong>$1');
-            text = text.replace(/基调[：:](.*?)(?=\n\n|\n[^\n]|$)/s, '<strong>基调:</strong>$1');
-
-            // Convert line breaks to paragraphs
+            // 转换换行符为段落
             const paragraphs = text.split('\n\n').filter(p => p.trim() !== '');
             return paragraphs.map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
         }
@@ -1225,7 +1101,7 @@
                         messages: [
                             {
                                 role: 'system',
-                                content: '你是昨日重现（Yesterday Once More）的AI助手，一个专注于创建独特香水配方的虚拟顾问。你擅长分析用户的描述、图片、音频和视频，并将其转化为香水配方。你的回答应该富有创意，同时保持专业性，使用香水行业的术语。你的风格应该既有诗意又有科学性，能够唤起人们对过去美好时光的怀念，同时展现香水的艺术性和科学性。'
+                                content: '你是昨日重现（Yesterday Once More）的AI助手，一个智能对话助手。你擅长分析用户的描述、图片、音频和视频，并提供有用的信息和帮助。你的回答应该富有创意，同时保持专业性。你的风格应该既有诗意又有科学性，能够唤起人们对过去美好时光的怀念。'
                             },
                             {
                                 role: 'user',
@@ -1266,15 +1142,8 @@
                 console.error('Error sending message:', error);
 
                 // Fallback response
-                let fallbackResponse;
-
-                if (mediaFiles.length > 0) {
-                    fallbackResponse = "<p>我分析了你上传的媒体，这让我想到一款香水配方：</p><p><strong>顶调:</strong> 柑橘、佛手柑、海盐</p><p><strong>中调:</strong> 茉莉、紫罗兰叶、水生调</p><p><strong>基调:</strong> 琥珀、麝香、雪松</p><p>这款香水捕捉了昨日的美好回忆，既有清新的水感，又有温暖的基调，就像在回忆中重游美好的时光。</p>";
-                } else if (userMessage.toLowerCase().includes('香水') || userMessage.toLowerCase().includes('气味') || userMessage.toLowerCase().includes('香气')) {
-                    fallbackResponse = "<p>基于你的描述，我推荐这款香水配方：</p><p><strong>顶调:</strong> 柠檬、葡萄柚、薄荷</p><p><strong>中调:</strong> 玫瑰、铃兰、海洋调</p><p><strong>基调:</strong> 广藿香、香根草、琥珀</p><p>这款香水融合了清新与深沉，就像在回忆中重游美好的时光，既有怀旧的温暖，又有新鲜的生机。</p>";
-                } else {
-                    fallbackResponse = translations[currentLang].welcome;
-                }
+                // 使用欢迎信息作为回退响应
+                const fallbackResponse = translations[currentLang].welcome;
 
                 addMessage(fallbackResponse, false);
             }
@@ -1325,26 +1194,16 @@
         // Text content for different languages
         const translations = {
             en: {
-                welcome: "Welcome to Yesterday Once More. I can help you create unique perfume formulations by analyzing your descriptions, images, audio, or video. Tell me what kind of perfume you'd like, or upload media for inspiration.",
-                inputPlaceholder: "Describe your perfume inspiration, or upload images, audio, video...",
+                welcome: "Welcome to Yesterday Once More! I'm your AI Scent Alchemist. Share a memory with me—a few words, a photo, a video, or even a song—and I'll transform the feeling of it into a unique perfume recipe.",
+                inputPlaceholder: "Type your message here...",
                 sendButton: "Send",
-                perfumeTitle: "Perfume Collection",
-                perfumeSubtitle: "Inspired by Classical Chinese Poetry",
-                siteTitle: "Yesterday Once More",
-                perfumeName: "Lantern Festival",
-                perfumePoem: "Inspired by \"青玉案·元夕\" (Xin Qiji)",
-                topNotesTitle: "Top Notes: Gunpowder & Plum Wine"
+                siteTitle: "Yesterday Once More"
             },
             zh: {
-                welcome: "欢迎来到昨日重现香氛体验。我可以帮你创建独特的香水配方，分析图片、音频或视频中的情绪，并将其转化为香调。请告诉我你想要什么样的香水，或上传媒体让我获取灵感。",
-                inputPlaceholder: "描述你的香水灵感，或上传图片、音频、视频...",
+                welcome: "欢迎来到昨日重现！我是你的AI香氛炼金师。与我分享一段记忆——几句话、一张照片、一段视频，甚至一首歌——我将把这种感觉转化为独特的香水配方。",
+                inputPlaceholder: "在这里输入你的消息...",
                 sendButton: "发送",
-                perfumeTitle: "香水系列",
-                perfumeSubtitle: "灵感源自中国古典诗词",
-                siteTitle: "昨日重现",
-                perfumeName: "元夕花火",
-                perfumePoem: "灵感源自辛弃疾《青玉案·元夕》",
-                topNotesTitle: "前调：硝烟与冷甜的对撞"
+                siteTitle: "昨日重现"
             }
         };
 
@@ -1369,6 +1228,15 @@
                 document.querySelectorAll('.zh-content').forEach(el => el.style.display = 'block');
             }
 
+            // Make sure the quote text is visible
+            document.querySelectorAll('.quote-text').forEach(el => {
+                if (el.classList.contains(lang + '-content')) {
+                    el.style.display = 'block';
+                } else {
+                    el.style.display = 'none';
+                }
+            });
+
             // Update placeholder and button text
             document.getElementById('chat-input').placeholder = translations[lang].inputPlaceholder;
             document.getElementById('send-button').textContent = translations[lang].sendButton;
@@ -1376,19 +1244,7 @@
             // Update site title
             document.querySelector('.logo').textContent = translations[lang].siteTitle;
 
-            // Update perfume page titles
-            document.querySelector('.section-title').textContent = translations[lang].perfumeTitle;
-            document.querySelector('.section-subtitle').textContent = translations[lang].perfumeSubtitle;
-
-            // Update perfume details
-            document.querySelector('.perfume-front .perfume-title').textContent = translations[lang].perfumeName;
-            document.querySelector('.perfume-front .perfume-subtitle').textContent = translations[lang].perfumePoem;
-            document.querySelector('.perfume-back .perfume-title').textContent = translations[lang].perfumeName;
-            document.querySelector('.perfume-back .perfume-subtitle').textContent = translations[lang].perfumePoem;
-
-            // Update perfume notes titles
-            document.getElementById('top-notes-en').textContent = translations['en'].topNotesTitle;
-            document.getElementById('top-notes-zh').textContent = translations['zh'].topNotesTitle;
+            // 移除香水页面相关代码
 
             // Update welcome message if it's the only message in the chat
             const chatMessages = document.getElementById('chat-messages');
@@ -1402,28 +1258,7 @@
         enLangBtn.addEventListener('click', () => updateLanguage('en'));
         zhLangBtn.addEventListener('click', () => updateLanguage('zh'));
 
-        // Page navigation
-        const navDots = document.querySelectorAll('.nav-dot');
-        const pages = document.querySelectorAll('.page');
-
-        navDots.forEach(dot => {
-            dot.addEventListener('click', () => {
-                const targetPage = dot.getAttribute('data-page');
-
-                // Update active dot
-                navDots.forEach(d => d.classList.remove('active'));
-                dot.classList.add('active');
-
-                // Show target page
-                pages.forEach(page => {
-                    if (page.id === targetPage) {
-                        page.classList.add('active');
-                    } else {
-                        page.classList.remove('active');
-                    }
-                });
-            });
-        });
+        // 移除页面导航相关代码
 
         // Initialize language to English
         updateLanguage('en');
